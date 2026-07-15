@@ -25,19 +25,19 @@ chores = [
 ]
 taskLength = len(chores)
 
-@app.get("/")
+@app.get("/", description="Root endpoint - API information")
 async def root():
     return { "name": "Task API", "version": "1.0", "endpoints": ["/tasks"] }
 
-@app.get("/health")
+@app.get("/health", description="Health check endpoint - server status")
 async def health():
     return { "status": "ok" }
 
-@app.get("/tasks")
+@app.get("/tasks", description="Get all tasks")
 async def get_all_tasks():
     return chores
 
-@app.get("/tasks/{id}")
+@app.get("/tasks/{id}", description="Get a task by ID")
 async def get_task_by_id(id: int):
     for chore in chores:
         if chore["id"] == id:
@@ -45,7 +45,7 @@ async def get_task_by_id(id: int):
         
     raise HTTPException(status_code=404, detail="Task not Found")
 
-@app.post("/tasks", status_code=status.HTTP_201_CREATED)
+@app.post("/tasks", status_code=status.HTTP_201_CREATED, description="Create a new task")
 async def add_task(task: Task):
     if not task.title:
         raise HTTPException(status_code=400, detail="Bad Request")
@@ -60,7 +60,7 @@ async def add_task(task: Task):
         chores.append(newTask)
         return newTask
 
-@app.put("/tasks/{id}")
+@app.put("/tasks/{id}", description="Update a task by ID", status_code=status.HTTP_200_OK)
 async def updateTask(id: int , task: Task):
     if not task.title:
         raise HTTPException(status_code=400, detail="Empty request")
@@ -72,7 +72,7 @@ async def updateTask(id: int , task: Task):
     
     raise HTTPException(status_code=404 , detail="Task not found")
 
-@app.delete("/tasks/{id}")
+@app.delete("/tasks/{id}", description="Delete a task by ID", status_code=status.HTTP_204_NO_CONTENT)
 async def deleteTask(id: int):
     choreToDel = None
     for chore in chores:
