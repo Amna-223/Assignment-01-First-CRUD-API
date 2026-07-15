@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, Response, status
 from pydantic import BaseModel
 
 class Task(BaseModel):
@@ -59,3 +59,29 @@ async def add_task(task: Task):
             }
         chores.append(newTask)
         return newTask
+
+@app.put("/tasks/{id}")
+async def updateTask(id: int , task: Task):
+    if not task.title:
+        raise HTTPException(status_code=400, detail="Empty request")
+    for chore in chores:
+        if chore["id"] == id:
+            chore["title"] = task.title
+            return chore
+    
+    
+    raise HTTPException(status_code=404 , detail="Task not found")
+
+@app.delete("/tasks/{id}")
+async def deleteTask(id: int):
+    choreToDel = None
+    for chore in chores:
+        if chore["id"] == id:
+            choreToDel = chore
+            break
+            
+    if choreToDel:
+        chores.remove(choreToDel)
+        return Response(status_code=204)
+    else:
+        raise HTTPException(status_code=404 , detail="Task not found")
