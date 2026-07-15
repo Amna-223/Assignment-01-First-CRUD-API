@@ -37,4 +37,4 @@ async def get_task_by_id(id: int):
         if chore["id"] == id:
             return chore
         
-    return HTTPException(status_code=404, detail="Task not Found")
+    raise HTTPException(status_code=404, detail="Task not Found")
