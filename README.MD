@@ -162,6 +162,8 @@ FastAPI automatically generates interactive API documentation — no extra setup
 Visit **http://localhost:8000/docs** to explore and test all endpoints directly in your browser.
 
 ![Swagger UI Screenshot](SwaggerUI.png)
+![Swagger Result](SwaggerResult.png)
+
 
 ---
 
@@ -176,6 +178,32 @@ Visit **http://localhost:8000/docs** to explore and test all endpoints directly 
 | **Delete** | DELETE | `/tasks/{id}` | Returns 204 No Content on success |
 
 ---
+⭐ Extras
+
+📊 Stats Endpoint
+
+A bonus endpoint that makes the server compute something rather than just return stored data.
+
+Endpoint: GET /stats
+
+bashcurl -i http://localhost:8000/stats
+
+Response:
+
+HTTP/1.1 200 OK
+content-type: application/json
+
+{"total": 3, "done": 2, "open": 1}
+
+FieldMeaningtotalTotal number of tasksdoneTasks marked as done: trueopenTasks still pending (done: false)
+
+
+💀 The Mortality Experiment
+
+I created several new tasks via POST, confirmed they appeared in GET /tasks, then restarted the server. After restart, GET /tasks returned only the 3 original hardcoded tasks — every task I had added was gone.
+
+This happens because this API uses in-memory storage — the chores list lives in RAM, which is wiped every time the Python process stops. There is no database writing anything to disk, so nothing survives a restart. This is exactly why databases exist, and exactly what Week 3 is about.
+
 
 ## 📁 Project Structure
 
