@@ -85,3 +85,19 @@ async def deleteTask(id: int):
         return Response(status_code=204)
     else:
         raise HTTPException(status_code=404 , detail="Task not found")
+    
+
+@app.get("/stats")
+async def getStats():
+    totalTasks = len(chores)
+    if totalTasks == 0:
+        return {"total": 0, "done": 0, "open": 0}
+    taskDone = 0
+    taskNotDone = 0
+    for chore in chores:
+        if chore["done"] == False:
+            taskNotDone += 1
+        else:
+            taskDone += 1
+
+    return {"total" : totalTasks, "done": taskDone, "open": taskNotDone}
